@@ -119,7 +119,7 @@ struct construct ascii_to_IEEE7(char *ascii_number, int size){
     while (mnts_shft > 0)                                                                         // apply mantissa algo
     {
         x.decf *= 2;                                                                   // multiply decimal fraction by 2 
-        if (x.decf >= 1){                                  // if result is greater or equal to 1, add bit '1' to mantissa
+        if (x.decf >= 1){                                 // if result is greater or equal to 1, add bit '1' to mantissa
             if (!zer) x.mtsa |= ( 1 << mnts_shft );                // set the bit for mantissa  starting from the 'left'
             x.decf -= 1;                                                        // remove integer portion if '1' present
             if (zer) x.expt = (126 - ( 22 - mnts_shft ) ) << 23, zer = false, extra_shift = 23 - mnts_shft;
