@@ -1,0 +1,45 @@
+
+   #------------------------------------------------------------------------
+   # int main () {
+   #------------------------------------------------------------------------
+   # goldbolt uses r7 instead of fp everywhere 
+   # goldbolt has the add and sub order switched and uses #0 instead of #4
+   #------------------------------------------------------------------------
+      29 0000 00482DE9 		push	{fp, lr}
+      30 0004 04B08DE2 		add	fp, sp, #4    
+      31 0008 10D04DE2 		sub	sp, sp, #16
+   #------------------------------------------------------------------------
+   # int r1 = 1
+   # here fp instead of r7 and #-8 instead of #12 in str 
+   #------------------------------------------------------------------------
+      32 000c 0130A0E3 		mov	r3, #1
+      33 0010 08300BE5 		str	r3, [fp, #-8] 
+   #------------------------------------------------------------------------
+   # int r2 = 257
+   # godbolt is using the literal #257 while this is using .L3 
+   #------------------------------------------------------------------------
+      34 0014 24309FE5 		ldr	r3, .L3
+      35 0018 0C300BE5 		str	r3, [fp, #-12]
+   #------------------------------------------------------------------------
+   # int r0 = r1 + r2 
+   # this section seems very different
+   # godbolt uses add command but this does not , seems to add values in the 
+      argument (.L3+4)
+   #------------------------------------------------------------------------
+      36 001c 08301BE5 		ldr	r3, [fp, #-8]
+      37 0020 10300BE5 		str	r3, [fp, #-16]
+      38 0024 10101BE5 		ldr	r1, [fp, #-16]
+      39 0028 14009FE5 		ldr	r0, .L3+4
+  #------------------------------------------------------------------------
+  #  printf("Answer is: %d", r0)
+  #  this section also very different after bl printf 
+  #  mov instead of movs, sub instead of adds
+  #  extra mov in godbolt
+  #------------------------------------------------------------------------
+  40 002c FEFFFFEB 		bl	printf
+  41 0030 0030A0E3 		mov	r3, #0
+  42 0034 0300A0E1 		mov	r0, r3
+  43 0038 04D04BE2 		sub	sp, fp, #4
+  44              		@ sp needed
+  45 003c 0088BDE8 		pop	{fp, pc}
+}
