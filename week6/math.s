@@ -102,16 +102,16 @@ XORswitch:  ldr R0, =outmsg2
             ldr R1, [R1]     @ deref to get vals
             ldr R2, [R2]
             eor R1, R1, R2  @ see comment at end                
-            eor R2, R1, R2 @ for xor algo example                 
+            eor R2, R1, R2 @ for xor algo exmple                 
             eor R1, R1, R2                       
             bl printf
 @ ----------------------------------------------            
-@  in R1 combine info of xy e.g. 10(x) xor 12(y) 
-@       1010(x) eor 1100(y) = 0110 & put into R1 
-@    R2 xor's result 0110 with og val in R2 1100
-@  1100 eor 0110 = 1010 which was the original x
-@      R1 then xors what is currently in R1 0110 
-@       with val in R2 1010 = 1100 = og y. wowz. 
+@      In R1 combine x & y via eor. Makes a key.
+@  			    now R1 = key, R2 = y
+@      	    eor R1 (key) with R2 (y) unlocks 'x'
+@                           now R1 = key, R2 = x
+@           eor R1 (key) with R2 (x) unlocks 'y'
+@           now R1 = y, R2 = x, switch complete.  
 @ ----------------------------------------------
 @            Subtraction via addition
 @ ----------------------------------------------
@@ -134,7 +134,7 @@ display2d:  mov R0, #1   @ tell linux write term
 read2d:     ldr R0, =input @<-r0 address of "%d"
             ldr R1, =y           @ dest of input
             bl scanf          @ get 'y' from usr
-
+@ ----------------------------------------------  
 addinvese:  ldr R0, =y         @ load y mem addr
             ldr R0, [R0]      @ deref to get val 
             ldr R1, =x         @ load x mem addr
@@ -144,7 +144,7 @@ addinvese:  ldr R0, =y         @ load y mem addr
             add R1, R1, R0     @ add the inverse
             ldr R3, =res           @ save result
             str R1, [R3]
-
+@ ----------------------------------------------  
 output:     ldr R0, =outmsg3     @ print x y res
             ldr R1, =x
             ldr R1, [R1]
