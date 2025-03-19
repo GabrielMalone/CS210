@@ -57,13 +57,28 @@ rbrack:     ldr R0, =rbr   @ right bracket print
 @ ----------------------------------------------
 @           FIND PRIMES 
 @ ----------------------------------------------
+
+rootprep:   ldr R5, =arr_size   @ load arry size
+            ldr R5, [R5]             @ deference
+            mov R10, R5 @sve for later for print
+            add R5, R5, #1      @ size + 1 for 0 
+            ldr R9, =arr_size  @ update arr size
+            mov R4, #0    @ initialize a counter 
+
+sqrtloop:   cmp R7, R5 @ cmpr cur square to size
+            bge onetwozero        @ break if > = 
+            add R4, R4, #1 @ increment sqr 1,2,3
+            mul R7, R4, R4       @ create square
+            str R4, [R9, #0]     @ save new size   
+            b sqrtloop 
+
 onetwozero: mov R8, #0   @ mark 0 1 as not prime
             mov R9, #1
             ldr R5, =nums_arr 
             str R8, [R5, R8, LSL #2] 
             str R8, [R5, R9, LSL #2]
 
-prep3:      ldr R5, =arr_size    
+findprep:   ldr R5, =arr_size    
             ldr R5, [R5] 
             add R5, R5, #1   
             add R5, #1  @      n + 1 for algo  ?     
@@ -80,7 +95,7 @@ outloop:    cmp R4, R5            @ loop counter
             b outloop
 
 inloop:     add R6, R6, R1  @ prime number jumps
-            cmp R6, R5         @ in loop counter
+            cmp R6, R10        @ in loop counter
             bge outloop       @ conditional exit
             ldr R7, =nums_arr 
             mov R8, #0
@@ -100,7 +115,7 @@ prep4:      ldr R5, =arr_size
             ldr R5, [R5]        
             mov R4, #0    @ initialize a counter 
 
-showloop2:  cmp R4, R5            @ loop counter
+showloop2:  cmp R4, R10           @ loop counter
             bge rbrack2       @ conditional exit
             ldr R0, =outmsg     
             ldr R1, =nums_arr
@@ -123,7 +138,7 @@ exit:       mov     r0, #0            @ return 0
 @ ----------------------------------------------
 .align      2
 arr_size:   .word  0
-nums_arr:   .space 40000000 @ save space for arr
+nums_arr:   .space 40000    @ save space for arr
 lbr:        .asciz                          "[ "
 rbr:        .asciz                         "]\n" 
 msg1:       .asciz       "\nfill array up to: " 

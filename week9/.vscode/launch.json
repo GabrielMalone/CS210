@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/gabrielmalone/CS/CS210/week9",
+      "program": "/Users/gabrielmalone/CS/CS210/week9/build/Debug/outDebug"
+    }
+  ]
+}
