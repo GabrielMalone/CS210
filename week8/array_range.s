@@ -29,10 +29,8 @@ setup:      ldr R0, =brackt
             ldr R1, =array @ load array from mem
             mov R6, #0x80000000   @ HO bit check
             mov R2, #0       @ counter for loops
-            mov R3, #0x0         @ min val track
-            mvn R3, R3   @ set val high to start
+            mov R3, #0           @ min val track
             mov R4, #0           @ max val track
-            mov R7, #0  @ reg for result of mask
             mov R8, #0 @ reg for two comp result
 @ ----------------------------------------------
 @           loop to find min val
@@ -40,10 +38,8 @@ setup:      ldr R0, =brackt
 minloop:    cmp R2, #10           @ loop counter
             bge maxsetup
             ldr R5, [R1, R2, lsl #2] @ next word
-            and R7, R5, R6 @apply neg mask check
-            cmp R7, #0 @ if 1 present branch 2sc
+            tst R5, R6     @apply neg mask check
             bne twoscompmin
-            mov R7, #0                   @ reset
 retmin:     add R2, #1       @ increment counter
             b minloop
 @ ----------------------------------------------
@@ -52,7 +48,7 @@ retmin:     add R2, #1       @ increment counter
 twoscompmin:mvn R8, R5   @ else logical not bits
             add R8, #1                   @ add 1 
             cmp R3, R8    @ compare value to min
-            movhi R3, R5  @ if old < new mov new
+            movlo R3, R8  @ if old < new mov new
             b retmin
 @ ----------------------------------------------
 @           setup for max loop
@@ -64,8 +60,7 @@ maxsetup:   mov R2, #0           @ reset counter
 maxloop:    cmp R2, #10     
             bge printvals
             ldr R5, [R1, R2, lsl #2] @ next word
-            and R7, R5, R6 @apply neg mask check
-            cmp R7, #0 @ if 1 present (neg) skip
+            tst R5, R6     @apply neg mask check
             bne retmax
 posonly:    cmp R4, R5   @ check for new max val
             movlo R4, R5 @ if old < new, mov new  
@@ -89,8 +84,8 @@ exit:       mov     r0, #0            @ return 0
 intro:      .asciz        "An array of ints: [ "
 num:        .asciz                         "%d "
 brackt:     .asciz                         "]\n"
-output:     .asciz  "min val: %d, max val: %d\n"
+output:     .asciz "min val: -%d, max val: %d\n"
 range:      .asciz                 "range: %d\n"
-array:      .word 10000,2,-3,4,5,-6,7,8,-9000,10
+array:      .word 2,-9,4,5,-6,10000,7,8,-9001,-3
 negmask:    .word 0x80000000  @check if 1 is set
                  
